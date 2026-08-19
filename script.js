@@ -1,5 +1,6 @@
 let ingredients = []
 
+const STORAGE_KEY = 'rudy_calc_v1'
 const form = document.getElementById('ingredient-form')
 const tbody = document.querySelector('#ingredients-table tbody')
 const summary = document.getElementById('summary')
@@ -10,7 +11,39 @@ form.addEventListener('submit', e => {
 })
 
 document.getElementById('calculate').addEventListener('click', ()=> renderSummary())
-document.getElementById('clear').addEventListener('click', ()=>{ingredients=[]; renderTable(); renderSummary()})
+document.getElementById('clear').addEventListener('click', ()=>{ingredients=[]; saveState(); renderTable(); renderSummary()})
+
+function saveState(){
+  const state = {
+    ingredients,
+    yield: document.getElementById('yield').value,
+    currency: document.getElementById('currency').value,
+    markup: document.getElementById('markup').value
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if(!raw) return
+  try{
+    const s = JSON.parse(raw)
+    if(Array.isArray(s.ingredients)){
+      ingredients = s.ingredients.map(i=>({
+        name: i.name || '',
+        usedQuantity: Number(i.usedQuantity) || 0,
+        unit: i.unit || 'g',
+        totalQuantity: Number(i.totalQuantity) || 1,
+        price: Number(i.price) || 0
+      }))
+    }
+    if(s.yield !== undefined) document.getElementById('yield').value = s.yield
+    if(s.currency !== undefined) document.getElementById('currency').value = s.currency
+    if(s.markup !== undefined) document.getElementById('markup').value = s.markup
+  }catch(e){
+    console.warn('No se pudo cargar estado:', e)
+  }
+}
 
 function addIngredient(){
   const name = document.getElementById('name').value.trim()
@@ -23,6 +56,7 @@ function addIngredient(){
   const ing = {name, usedQuantity, unit, totalQuantity, price}
   ingredients.push(ing)
   form.reset()
+  saveState()
   renderTable()
   renderSummary()
 }
@@ -43,7 +77,7 @@ function renderTable(){
     tbody.appendChild(tr)
   })
   Array.from(document.querySelectorAll('.remove-btn')).forEach(btn=>{
-    btn.addEventListener('click', ()=>{ingredients.splice(parseInt(btn.dataset.i),1); renderTable(); renderSummary()})
+    btn.addEventListener('click', ()=>{ingredients.splice(parseInt(btn.dataset.i),1); saveState(); renderTable(); renderSummary()})
   })
 }
 
@@ -70,6 +104,7 @@ function renderSummary(){
     <div class="small">Costo por unidad/porción: <strong>${formatMoney(costPerUnit, currency)}</strong></div>
     <div class="small">Precio final sugerido (con ${markup}%): <strong>${formatMoney(priceWithMarkup, currency)}</strong></div>
   `
+  saveState()
 }
 
 function formatMoney(v, currency='€'){
@@ -77,6 +112,7 @@ function formatMoney(v, currency='€'){
   return (Math.round(v*100)/100).toFixed(2) + ' ' + currency
 }
 
-// initial render
+// load saved state and initial render
+loadState()
 renderTable()
 renderSummary()
