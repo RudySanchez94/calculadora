@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Calculadora de costos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de costo de producto</h1>
+
+    <form id="ingredient-form" class="card">
+      <div class="row">
+        <input id="name" placeholder="Nombre del ingrediente" required>
+        <input id="usedQuantity" type="number" placeholder="Cantidad usada" step="any" required>
+        <select id="unit">
+          <option value="g">g</option>
+          <option value="ml">ml</option>
+          <option value="u">u</option>
+        </select>
+        <input id="totalQuantity" type="number" placeholder="Cantidad total del envase" step="any" required>
+        <input id="price" type="number" placeholder="Precio del envase" step="any" required>
+        <button type="submit">Agregar ingrediente</button>
+      </div>
+    </form>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table id="ingredients-table">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Cantidad usada</th>
+              <th>Unidad</th>
+              <th>Costo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card controls">
+      <input id="yield" type="number" placeholder="Rendimiento final (ej. 10 unidades o 1000)" step="any" value="1">
+      <input id="currency" placeholder="Moneda" value="€">
+      <input id="markup" type="number" placeholder="% margen (ej. 30)" value="30">
+      <button id="calculate">Calcular precio final</button>
+      <button id="clear">Limpiar ingredientes</button>
+    </div>
+
+    <div id="summary" class="card summary"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
