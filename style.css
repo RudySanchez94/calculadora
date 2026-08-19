@@ -28,3 +28,9 @@ button{min-height:40px}
 	.controls input, .controls button{width:100%;min-width:0}
 	th,td{padding:10px}
 }
+
+/* Conversion table styles */
+.conversion-card h2{margin-top:0}
+.conversion-table{width:320px;border-collapse:collapse;margin-top:8px}
+.conversion-table th,.conversion-table td{border:1px solid #eef2f7;padding:8px;text-align:left}
+
