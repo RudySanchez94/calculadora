@@ -16,12 +16,20 @@
         <input id="usedQuantity" type="number" placeholder="Cantidad usada" step="any" required>
         <select id="unit">
           <option value="g">g</option>
+          <option value="kg">kg</option>
           <option value="ml">ml</option>
+          <option value="l">l</option>
+          <option value="tsp">cucharadita</option>
+          <option value="tbsp">cucharada</option>
+          <option value="cup">taza</option>
+          <option value="oz">oz</option>
+          <option value="lb">lb</option>
           <option value="u">u</option>
         </select>
         <input id="totalQuantity" type="number" placeholder="Cantidad total del envase" step="any" required>
         <input id="price" type="number" placeholder="Precio del envase" step="any" required>
-        <button type="submit">Agregar ingrediente</button>
+        <button type="submit" id="addBtn">Agregar ingrediente</button>
+        <button type="button" id="cancelEdit" style="display:none">Cancelar edición</button>
       </div>
     </form>
 
@@ -51,6 +59,25 @@
     </div>
 
     <div id="summary" class="card summary"></div>
+    <div class="card conversion-card">
+      <h2>Tabla de conversión (taza → ml)</h2>
+      <div class="table-wrap">
+        <table class="conversion-table">
+          <thead>
+            <tr><th>Medida</th><th>Equivalencia</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1 taza (US)</td><td>240 ml</td></tr>
+            <tr><td>1/2 taza</td><td>120 ml</td></tr>
+            <tr><td>1/3 taza</td><td>80 ml</td></tr>
+            <tr><td>1/4 taza</td><td>60 ml</td></tr>
+            <tr><td>1 cucharada (Tbsp)</td><td>15 ml</td></tr>
+            <tr><td>1 cucharadita (tsp)</td><td>5 ml</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="small">Nota: valores aproximados en sistema US; adapta según necesidad.</div>
+    </div>
   </div>
 
   <script src="script.js"></script>
