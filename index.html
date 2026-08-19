@@ -27,6 +27,12 @@
           <option value="u">u</option>
         </select>
         <input id="totalQuantity" type="number" placeholder="Cantidad total del envase" step="any" required>
+        <select id="totalUnit">
+          <option value="g">g</option>
+          <option value="ml">ml</option>
+          <option value="u">u</option>
+          <option value="taza">taza</option>
+        </select>
         <input id="price" type="number" placeholder="Precio del envase" step="any" required>
         <button type="submit" id="addBtn">Agregar ingrediente</button>
         <button type="button" id="cancelEdit" style="display:none">Cancelar edición</button>
@@ -41,6 +47,7 @@
               <th>Ingrediente</th>
               <th>Cantidad usada</th>
               <th>Unidad</th>
+              <th>Envase</th>
               <th>Costo</th>
               <th></th>
             </tr>
@@ -52,7 +59,7 @@
 
     <div class="card controls">
       <input id="yield" type="number" placeholder="Rendimiento final (ej. 10 unidades o 1000)" step="any" value="1">
-      <input id="currency" placeholder="Moneda" value="€">
+      <input id="currency" placeholder="Moneda" value="$">
       <input id="markup" type="number" placeholder="% margen (ej. 30)" value="30">
       <button id="calculate">Calcular precio final</button>
       <button id="clear">Limpiar ingredientes</button>
