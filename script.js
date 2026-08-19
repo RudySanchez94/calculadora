@@ -72,6 +72,7 @@ function addIngredient(){
 
 function renderTable(){
   tbody.innerHTML = ''
+  const currency = document.getElementById('currency') ? document.getElementById('currency').value || '$' : '$'
   ingredients.forEach((ing, i)=>{
     const costPerUnit = ing.price / ing.totalQuantity
     const costUsed = costPerUnit * ing.usedQuantity
@@ -81,7 +82,7 @@ function renderTable(){
       <td>${ing.usedQuantity}</td>
       <td>${ing.unit}</td>
       <td>${ing.totalQuantity} ${ing.totalUnit || ''}</td>
-      <td>${formatMoney(costUsed)}</td>
+      <td>${formatMoney(costUsed, currency)}</td>
       <td>
         <button class="edit-btn" data-i="${i}">Editar</button>
         <button class="remove-btn" data-i="${i}">Eliminar</button>
@@ -131,7 +132,7 @@ function calculateTotals(){
 function renderSummary(){
   const totalCost = calculateTotals()
   const yieldVal = parseFloat(document.getElementById('yield').value) || 1
-  const currency = document.getElementById('currency').value || '€'
+  const currency = document.getElementById('currency').value || '$'
   const markup = parseFloat(document.getElementById('markup').value) || 0
 
   const costPerUnit = yieldVal>0 ? totalCost / yieldVal : totalCost
@@ -145,9 +146,18 @@ function renderSummary(){
   saveState()
 }
 
-function formatMoney(v, currency='€'){
+function formatMoney(v, currency='$'){
   if(isNaN(v)) v=0
-  return (Math.round(v*100)/100).toFixed(2) + ' ' + currency
+  const amount = (Math.round(v*100)/100).toFixed(2)
+  const cur = (currency || '').toString()
+  // Prefix when dollar or USD
+  if(cur.includes('$') || cur.toUpperCase().includes('USD')){
+    // If user entered just 'USD', show '$' prefix
+    const symbol = cur.includes('$') ? cur : '$'
+    return symbol + amount
+  }
+  // Default: suffix with currency string
+  return amount + ' ' + cur
 }
 
 // load saved state and initial render
