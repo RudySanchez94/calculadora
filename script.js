@@ -35,6 +35,7 @@ function loadState(){
         usedQuantity: Number(i.usedQuantity) || 0,
         unit: i.unit || 'g',
         totalQuantity: Number(i.totalQuantity) || 1,
+        totalUnit: i.totalUnit || 'g',
         price: Number(i.price) || 0
       }))
     }
@@ -51,9 +52,10 @@ function addIngredient(){
   const usedQuantity = parseFloat(document.getElementById('usedQuantity').value)
   const unit = document.getElementById('unit').value
   const totalQuantity = parseFloat(document.getElementById('totalQuantity').value)
+  const totalUnit = document.getElementById('totalUnit').value || 'g'
   const price = parseFloat(document.getElementById('price').value)
   if(!name || isNaN(usedQuantity) || isNaN(totalQuantity) || isNaN(price) || totalQuantity<=0) return alert('Completa los datos correctamente')
-  const ing = {name, usedQuantity, unit, totalQuantity, price}
+  const ing = {name, usedQuantity, unit, totalQuantity, totalUnit, price}
   if(editingIndex >= 0){
     ingredients[editingIndex] = ing
     editingIndex = -1
@@ -78,8 +80,12 @@ function renderTable(){
       <td>${ing.name}</td>
       <td>${ing.usedQuantity}</td>
       <td>${ing.unit}</td>
+      <td>${ing.totalQuantity} ${ing.totalUnit || ''}</td>
       <td>${formatMoney(costUsed)}</td>
-      <td><button class="remove-btn" data-i="${i}">Eliminar</button></td>
+      <td>
+        <button class="edit-btn" data-i="${i}">Editar</button>
+        <button class="remove-btn" data-i="${i}">Eliminar</button>
+      </td>
     `
     tbody.appendChild(tr)
   })
@@ -100,6 +106,7 @@ function startEdit(i){
   document.getElementById('unit').value = ing.unit
   document.getElementById('totalQuantity').value = ing.totalQuantity
   document.getElementById('price').value = ing.price
+  document.getElementById('totalUnit').value = ing.totalUnit || 'g'
   document.getElementById('addBtn').textContent = 'Guardar cambios'
   document.getElementById('cancelEdit').style.display = 'inline-block'
   window.scrollTo({top:0,behavior:'smooth'})
