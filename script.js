@@ -55,6 +55,7 @@ function addIngredient(){
   const totalUnit = document.getElementById('totalUnit').value || 'g'
   const price = parseFloat(document.getElementById('price').value)
   if(!name || isNaN(usedQuantity) || isNaN(totalQuantity) || isNaN(price) || totalQuantity<=0) return alert('Completa los datos correctamente')
+  if(!canConvertUnits(unit, totalUnit)) return alert('Las unidades deben ser compatibles (por ejemplo, ml con l o g con kg)')
   const ing = {name, usedQuantity, unit, totalQuantity, totalUnit, price}
   if(editingIndex >= 0){
     ingredients[editingIndex] = ing
@@ -70,12 +71,41 @@ function addIngredient(){
   renderSummary()
 }
 
+const unitConversions = {
+  g: {family: 'mass', factor: 1},
+  kg: {family: 'mass', factor: 1000},
+  oz: {family: 'mass', factor: 28.349523125},
+  lb: {family: 'mass', factor: 453.59237},
+  ml: {family: 'volume', factor: 1},
+  l: {family: 'volume', factor: 1000},
+  tsp: {family: 'volume', factor: 5},
+  tbsp: {family: 'volume', factor: 15},
+  cup: {family: 'volume', factor: 240},
+  u: {family: 'count', factor: 1}
+}
+
+function canConvertUnits(fromUnit, toUnit){
+  return unitConversions[fromUnit]?.family === unitConversions[toUnit]?.family
+}
+
+function convertQuantity(quantity, fromUnit, toUnit){
+  if(!canConvertUnits(fromUnit, toUnit)) return NaN
+  const from = unitConversions[fromUnit]
+  const to = unitConversions[toUnit]
+  return quantity * from.factor / to.factor
+}
+
+function getIngredientCost(ing){
+  const packageQuantityInUsedUnit = convertQuantity(ing.totalQuantity, ing.totalUnit, ing.unit)
+  if(!packageQuantityInUsedUnit || isNaN(packageQuantityInUsedUnit)) return 0
+  return (ing.price / packageQuantityInUsedUnit) * ing.usedQuantity
+}
+
 function renderTable(){
   tbody.innerHTML = ''
   const currency = document.getElementById('currency') ? document.getElementById('currency').value || '$' : '$'
   ingredients.forEach((ing, i)=>{
-    const costPerUnit = ing.price / ing.totalQuantity
-    const costUsed = costPerUnit * ing.usedQuantity
+    const costUsed = getIngredientCost(ing)
     const tr = document.createElement('tr')
     tr.innerHTML = `
       <td>${ing.name}</td>
@@ -123,8 +153,7 @@ document.getElementById('cancelEdit').addEventListener('click', ()=>{
 function calculateTotals(){
   let total = 0
   ingredients.forEach(ing=>{
-    const costPerUnit = ing.price / ing.totalQuantity
-    total += costPerUnit * ing.usedQuantity
+    total += getIngredientCost(ing)
   })
   return total
 }
